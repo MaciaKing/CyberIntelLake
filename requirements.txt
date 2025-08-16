@@ -1,0 +1,11 @@
+certifi==2025.8.3
+charset-normalizer==3.4.3
+distlib==0.3.8
+filelock==3.13.1
+idna==3.10
+platformdirs==4.2.0
+pyspark==3.5.0
+requests==2.32.4
+urllib3==2.5.0
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9

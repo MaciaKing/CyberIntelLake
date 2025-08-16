@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cyber_postgres
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - .docker_init/database_creation.sql:/docker-entrypoint-initdb.d/database_creation.sql:ro
+    restart: unless-stopped
+
+  cyberintellake:
+    build: .
+    container_name: cyberintellake
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: tail -f /dev/null
+
+volumes:
+  pg_data:
