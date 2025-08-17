@@ -34,7 +34,6 @@ while request_day_counter <= vt.MAX_REQUEST_PER_DAY:
         "file_extracted": file_path_to_extract,
         "response": record
     }
-    pdb.set_trace()
 
     # Guardar cada record en NDJSON (append)
     # batch
