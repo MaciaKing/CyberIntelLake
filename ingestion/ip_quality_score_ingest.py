@@ -6,9 +6,11 @@ from models.ip_quality_score import IpQualityScore
 from models.file_reader import FileReader
 from pathlib import Path
 from datetime import datetime
+from models.file_progress import FileProgress
 
 # File to extract data
-file_path_to_extract = Path(__file__).parent / '../data_to_extract/black_list_domain.txt'
+#file_path_to_extract = Path(__file__).parent / '../data_to_extract/black_list_domain.txt'
+file_path_to_extract = Path(__file__).parent / '../data_to_extract/white_list_domain.txt'
 fr = FileReader(file_path_to_extract)
 
 # Create database session
@@ -23,6 +25,13 @@ request_day_counter = 0
 
 try:
     while request_day_counter <= ipq.MAX_REQUEST_PER_DAY:
+
+        # Check monthly limit
+        requests_on_this_month = FileProgress.get_monthly_usage(database_session, 'IpQualityScore')
+        if requests_on_this_month >= ipq.MONTHLY_REQUEST:
+            print(f" Monthly limit reached ({requests_on_this_month}/{ipq.MONTHLY_REQUEST}). Stopping process.")
+            break
+
         domain_to_query = fr.read_line(progress.last_line_read)
         # The file has been read completely.
         if not domain_to_query:
