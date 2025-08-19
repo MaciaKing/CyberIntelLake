@@ -9,6 +9,7 @@ logging.basicConfig(level=logging.INFO)
 def run_etl():
     logging.info("Iniciando ETL...")
     subprocess.run(["python", "ingestion/vt_ingest.py"], check=True)
+    subprocess.run(["python", "ingestion/ip_quality_score_ingest.py"], check=True)
 
 # Define timezone
 madrid_tz = pytz.timezone("Europe/Madrid")

@@ -59,9 +59,12 @@ class VirusTotal():
 
     def find_or_create_progress(self, file_path, db_session):
         """Find existing progress for file or create a new one"""
-        progress = db_session.query(FileProgress).filter_by(file_path=str(file_path)).first()
+        progress = db_session.query(FileProgress).filter_by(
+            file_path=str(file_path),
+            extracted_from='VirusTotal'
+        ).first()
         if not progress:
-            progress = FileProgress(file_path=str(file_path), last_line_read=0)
+            progress = FileProgress(file_path=str(file_path), extracted_from='VirusTotal', last_line_read=0)
             db_session.add(progress)
             db_session.commit()
         return progress
