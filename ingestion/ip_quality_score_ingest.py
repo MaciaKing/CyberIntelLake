@@ -64,4 +64,4 @@ try:
 finally:
     progress.last_batch_number_extracted +=1
     progress.save(database_session)
-    print(f"ELT for Virus Total finished at {datetime.now()}")
+    print(f"ELT for IP Quality Score finished at {datetime.now()}")
