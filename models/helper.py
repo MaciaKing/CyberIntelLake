@@ -4,7 +4,7 @@ import json
 class Helper:
 
     @staticmethod
-    def make_query(url, header):
+    def make_query(url, header, params=None):
         """ Make a query to the url
         Params:
             - url (string). This is the url that will be requested.
@@ -19,7 +19,11 @@ class Helper:
             - Return a 'dict' (json) object.
             - Returns an error because the url is malformed.
         """
-        response = requests.get(url, headers=header)
+        if params != None:
+            response = requests.get(url, headers=header, params=params)
+        else:   
+            response = requests.get(url, headers=header)
+            
         if response.status_code == 200:
             return json.loads(response.text)
         else:
