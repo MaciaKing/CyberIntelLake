@@ -8,12 +8,23 @@ logging.basicConfig(level=logging.INFO)
 
 def run_etl():
     logging.info("Iniciando ETL...")
-    subprocess.run(["python", "ingestion/vt_ingest.py"], check=True)
-    subprocess.run(["python", "ingestion/ip_quality_score_ingest.py"], check=True)
+
+    procs = []
+    scripts = [
+        ["python", "ingestion/ip_quality_score_ingest.py"],
+        ["python", "ingestion/vt_ingest.py"],
+        ["python", "ingestion/alien_vault_ingest.py"]
+    ]
+
+    for script in scripts:
+        procs.append(subprocess.Popen(script))
+
+    for p in procs:
+        p.wait()
 
 # Define timezone
 madrid_tz = pytz.timezone("Europe/Madrid")
 scheduler = BlockingScheduler(timezone=madrid_tz)
 
-scheduler.add_job(run_etl, "cron", hour=17, minute=2)
+scheduler.add_job(run_etl, "cron", hour=11, minute=35)
 scheduler.start()
