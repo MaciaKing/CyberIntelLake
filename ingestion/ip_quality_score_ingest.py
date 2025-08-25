@@ -1,6 +1,7 @@
 import time
 import os
 import json
+import helper_ingest
 from models.database import SessionLocal
 from models.ip_quality_score import IpQualityScore
 from models.file_reader import FileReader
@@ -9,8 +10,7 @@ from datetime import datetime
 from models.file_progress import FileProgress
 
 # File to extract data
-#file_path_to_extract = Path(__file__).parent / '../data_to_extract/black_list_domain.txt'
-file_path_to_extract = Path(__file__).parent / '../data_to_extract/white_list_domain.txt'
+file_path_to_extract = helper_ingest.get_file_to_extract()
 fr = FileReader(file_path_to_extract)
 
 # Create database session
