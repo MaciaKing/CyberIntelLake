@@ -1,13 +1,15 @@
 import time
 import os
 import json
-from ingestion.helper_ingest import get_file_to_extract
+from ingestion.helper_ingest import get_file_to_extract, get_logging_config
 from models.database import SessionLocal
 from models.ip_quality_score import IpQualityScore
 from models.file_reader import FileReader
 from pathlib import Path
 from datetime import datetime
 from models.file_progress import FileProgress
+
+logger = get_logging_config('IpQualityScoreIngest ELT')
 
 # File to extract data
 file_path_to_extract = get_file_to_extract()
@@ -29,7 +31,7 @@ try:
         # Check monthly limit
         requests_on_this_month = FileProgress.get_monthly_usage(database_session, 'IpQualityScore')
         if requests_on_this_month >= ipq.MONTHLY_REQUEST:
-            print(f" Monthly limit reached ({requests_on_this_month}/{ipq.MONTHLY_REQUEST}). Stopping process.")
+            logger.info(f" Monthly limit reached ({requests_on_this_month}/{ipq.MONTHLY_REQUEST}). Stopping process.")
             break
 
         domain_to_query = fr.read_line(progress.last_line_read)
@@ -56,7 +58,7 @@ try:
         progress.save(database_session)
         request_day_counter += 1
 
-        print(f"{domain_to_query} processed")
+        logger.info(f"{domain_to_query} processed")
 
         # Wait time between requests
         time.sleep(ipq.get_waiting_time_between_requests())
@@ -64,4 +66,4 @@ try:
 finally:
     progress.last_batch_number_extracted +=1
     progress.save(database_session)
-    print(f"ELT for IP Quality Score finished at {datetime.now()}")
+    logger.info(f"ELT for IP Quality Score finished at {datetime.now()}")

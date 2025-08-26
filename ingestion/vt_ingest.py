@@ -1,12 +1,14 @@
 import time
 import os
 import json
-from ingestion.helper_ingest import get_file_to_extract
+from ingestion.helper_ingest import get_file_to_extract, get_logging_config
 from models.database import SessionLocal
 from models.virus_total import VirusTotal
 from models.file_reader import FileReader
 from pathlib import Path
 from datetime import datetime
+
+logger = get_logging_config('Virus Total ELT')
 
 # File to extract data
 file_path_to_extract = get_file_to_extract()
@@ -48,7 +50,7 @@ try:
         progress.save(database_session)
         request_day_counter += 1
 
-        print(f"{domain_to_query} processed")
+        logger.info(f"{domain_to_query} processed")
 
         # Wait time between requests
         time.sleep(vt.get_waiting_time_between_requests())
@@ -56,4 +58,4 @@ try:
 finally:
     progress.last_batch_number_extracted +=1
     progress.save(database_session)
-    print(f"ELT for Virus Total finished at {datetime.now()}")
+    logger.info(f"ELT for Virus Total finished at {datetime.now()}")

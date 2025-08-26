@@ -1,12 +1,14 @@
 import time
 import os
 import json
-from ingestion.helper_ingest import get_file_to_extract
+from ingestion.helper_ingest import get_file_to_extract, get_logging_config
 from models.database import SessionLocal
 from models.alien_vault import AlienVault
 from models.file_reader import FileReader
 from pathlib import Path
 from datetime import datetime
+
+logger = get_logging_config('AlienVault ELT')
 
 # File to extract data
 file_path_to_extract = get_file_to_extract()
@@ -32,7 +34,7 @@ try:
         try:
             record = av.search_pulses_top10(domain_to_query)
         except Exception as e:
-            print(f"Error con {domain_to_query}: {e}")
+            logger.info(f"Error con {domain_to_query}: {e}")
             record = {}
 
         # Encapsulate the record with the domain and the
@@ -51,7 +53,7 @@ try:
         progress.save(database_session)
         request_day_counter += 1
 
-        print(f"{domain_to_query} processed")
+        logger.info(f"{domain_to_query} processed")
 
         # Wait time between requests
         time.sleep(av.get_waiting_time_between_requests())
@@ -59,4 +61,4 @@ try:
 finally:
     progress.last_batch_number_extracted +=1
     progress.save(database_session)
-    print(f"ELT for Alien Vault finished at {datetime.now()}")
+    logger.info(f"ELT for Alien Vault finished at {datetime.now()}")
