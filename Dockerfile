@@ -16,6 +16,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Volver a usuario default de Bitnami
 USER 1001
 
-
 # Mantener contenedor activo
-#CMD ["tail", "-f", "/dev/null"]
+CMD ["python3", "-m", "schedule.scheduler.py"]
