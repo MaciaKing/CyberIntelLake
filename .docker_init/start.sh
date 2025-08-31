@@ -1,14 +1,14 @@
 #!/bin/bash
-# .docker_init/start.sh
 set -e
-
-echo "MACIAAAA"
 
 ROOT_DIR="/app"
 cd $ROOT_DIR
 export PYTHONPATH=$ROOT_DIR:$PYTHONPATH
 
-# Inicializar la base de datos
+# Wait for db connection
+.docker_init/wait-for-it.sh $POSTGRES_HOST:$POSTGRES_PORT -t 30 -- echo "PostgreSQL service ready"
+
+# Init db
 python -m database.init_db
 
 tail -f /dev/null
