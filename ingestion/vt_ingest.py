@@ -8,7 +8,6 @@ from models.file_reader import FileReader
 from models.batch_progres import LastBatchNumber
 from pathlib import Path
 from datetime import datetime
-import pdb
 
 logger = get_logging_config('Virus Total ELT')
 
