@@ -11,7 +11,6 @@ class FileProgress(Base):
     file_path = Column(String, index=True)
     extracted_from = Column(String, index=True)
     last_line_read = Column(Integer, default=0)
-    last_batch_number_extracted = Column(Integer, default=0)
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
