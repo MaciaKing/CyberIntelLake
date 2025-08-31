@@ -11,4 +11,5 @@ export PYTHONPATH=$ROOT_DIR:$PYTHONPATH
 # Init db
 python -m database.init_db
 
-tail -f /dev/null
+# Init extractor app
+python -m schedule.scheduler

@@ -13,7 +13,7 @@ def run_etl():
     scripts = [
         ["python", "ingestion/ip_quality_score_ingest.py"],
         ["python", "ingestion/vt_ingest.py"],
-        #["python", "ingestion/alien_vault_ingest.py"]
+        ["python", "ingestion/alien_vault_ingest.py"]
     ]
 
     for script in scripts:
@@ -22,9 +22,8 @@ def run_etl():
     for p in procs:
         p.wait()
 
-utc_tz = pytz.UTC
 # Define timezone
-#madrid_tz = pytz.timezone("Europe/Madrid")
+utc_tz = pytz.UTC
 scheduler = BlockingScheduler(timezone=utc_tz)
 
 scheduler.add_job(run_etl, "cron", hour=14, minute=35)
