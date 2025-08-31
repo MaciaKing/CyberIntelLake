@@ -2,12 +2,13 @@ import time
 import os
 import json
 from ingestion.helper_ingest import get_file_to_extract, get_logging_config
-from models.database import SessionLocal
+from database.database import SessionLocal
 from models.ip_quality_score import IpQualityScore
 from models.file_reader import FileReader
 from pathlib import Path
 from datetime import datetime
 from models.file_progress import FileProgress
+from models.batch_progres import LastBatchNumber
 
 logger = get_logging_config('IpQualityScoreIngest ELT')
 
@@ -17,11 +18,15 @@ fr = FileReader(file_path_to_extract)
 
 # Create database session
 database_session = SessionLocal()
+lbn = LastBatchNumber()
+
 ipq = IpQualityScore(os.getenv('IP_QUALITY_SCORE_KEY'))
 
 # Load last progress or create it
 progress = ipq.find_or_create_progress(file_path_to_extract, database_session)
-OUTPUT_FILE = Path(__file__).parent / F"../data/bronze/ip_quality_score/ip_quality_score_batch{progress.last_batch_number_extracted}.ndjson"
+
+iqs_lbn_instance = lbn.find_or_create(database_session, 'IpQualityScore')
+OUTPUT_FILE = Path(__file__).parent / F"../data/bronze/ip_quality_score/ip_quality_score_batch_{iqs_lbn_instance.last_batch_number_extracted + 1}.ndjson"
 
 request_day_counter = 0
 
@@ -64,6 +69,6 @@ try:
         time.sleep(ipq.get_waiting_time_between_requests())
 
 finally:
-    progress.last_batch_number_extracted +=1
-    progress.save(database_session)
+    iqs_lbn_instance.last_batch_number_extracted +=1
+    iqs_lbn_instance.save(database_session)
     logger.info(f"ELT for IP Quality Score finished at {datetime.now()}")

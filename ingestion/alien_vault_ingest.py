@@ -2,9 +2,10 @@ import time
 import os
 import json
 from ingestion.helper_ingest import get_file_to_extract, get_logging_config
-from models.database import SessionLocal
+from database.database import SessionLocal
 from models.alien_vault import AlienVault
 from models.file_reader import FileReader
+from models.batch_progres import LastBatchNumber
 from pathlib import Path
 from datetime import datetime
 
@@ -16,11 +17,15 @@ fr = FileReader(file_path_to_extract)
 
 # Create database session
 database_session = SessionLocal()
+lbn = LastBatchNumber()
+
 av = AlienVault(os.getenv('ALIEN_VAULT_OTX_KEY'))
 
 # Load last progress or create it
 progress = av.find_or_create_progress(file_path_to_extract, database_session)
-OUTPUT_FILE = Path(__file__).parent / F"../data/bronze/alien_vault/alien_vault_batch{progress.last_batch_number_extracted}.ndjson"
+
+alv_lbn_instance = lbn.find_or_create(database_session, 'AlienVault')
+OUTPUT_FILE = Path(__file__).parent / F"../data/bronze/alien_vault/alien_vault_batch_{alv_lbn_instance.last_batch_number_extracted + 1}.ndjson"
 
 request_day_counter = 0
 
@@ -59,6 +64,6 @@ try:
         time.sleep(av.get_waiting_time_between_requests())
 
 finally:
-    progress.last_batch_number_extracted +=1
-    progress.save(database_session)
+    alv_lbn_instance.last_batch_number_extracted +=1
+    alv_lbn_instance.save(database_session)
     logger.info(f"ELT for Alien Vault finished at {datetime.now()}")
