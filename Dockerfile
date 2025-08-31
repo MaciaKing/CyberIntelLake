@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y python3-pip cron && rm -rf /var/lib/apt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Volver a usuario default de Bitnami
-USER 1001
+#USER 1001
 
 # Mantener contenedor activo
-CMD ["python3", "-m", "schedule.scheduler.py"]
+CMD [".docker_init/start.sh"]

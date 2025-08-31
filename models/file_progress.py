@@ -1,9 +1,8 @@
 from sqlalchemy import Column, String, Integer, DateTime, PrimaryKeyConstraint, desc, extract
 from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
+from database.database import Base
 from datetime import datetime
-
-Base = declarative_base()
 
 class FileProgress(Base):
     __tablename__ = "file_progress"
