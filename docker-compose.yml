@@ -20,7 +20,6 @@ services:
       - .env
     volumes:
       - .:/app
-    command: tail -f /dev/null
 
 volumes:
   pg_data:
