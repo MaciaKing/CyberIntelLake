@@ -36,7 +36,15 @@ try:
         # The file has been read completely.
         if not domain_to_query:
             break
-        record = vt.make_domain_query(domain_to_query)
+        
+        try:
+            record = vt.make_domain_query(domain_to_query)
+        except Exception as e:
+            logger.warning(f"Error querying domain '{domain_to_query}': {e}")
+            # In some URLs, the VirusTotal query does not work properly.
+            progress.last_line_read += 1
+            progress.save(database_session)
+            continue
 
         # Encapsulate the record with the domain and the
         # name of the file from which it was extracted.
