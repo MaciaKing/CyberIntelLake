@@ -30,7 +30,7 @@ OUTPUT_FILE = Path(__file__).parent / F"../data/bronze/virus_total/virus_total_b
 request_day_counter = 0
 
 try:
-    while request_day_counter <= vt.MAX_REQUEST_PER_DAY:
+    while request_day_counter < vt.MAX_REQUEST_PER_DAY:
         domain_to_query = fr.read_line(progress.last_line_read)
         # The file has been read completely.
         if not domain_to_query:
