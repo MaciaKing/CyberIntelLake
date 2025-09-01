@@ -44,6 +44,7 @@ try:
             # In some URLs, the VirusTotal query does not work properly.
             progress.last_line_read += 1
             progress.save(database_session)
+            request_day_counter += 1
             continue
 
         # Encapsulate the record with the domain and the
