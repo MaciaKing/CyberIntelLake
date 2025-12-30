@@ -27,5 +27,5 @@ utc_tz = pytz.UTC
 #madrid_tz = pytz.timezone("Europe/Madrid")
 scheduler = BlockingScheduler(timezone=utc_tz)
 
-scheduler.add_job(run_etl, "cron", hour=20, minute=30)
+scheduler.add_job(run_etl, "cron", hour=14, minute=37)
 scheduler.start()
