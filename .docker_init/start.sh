@@ -9,6 +9,8 @@ export PYTHONPATH=$ROOT_DIR:$PYTHONPATH
 .docker_init/wait-for-it.sh $POSTGRES_HOST:$POSTGRES_PORT -t 30 -- echo "PostgreSQL service ready"
 
 # Init db
-python -m database.init_db
+python3 -m database.init_db
+
+python3 -m schedule.scheduler
 
 tail -f /dev/null
