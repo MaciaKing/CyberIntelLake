@@ -23,14 +23,14 @@ def launch_script(name, cfg):
         lock = FileLock(lock_path)
         try:
             lock.acquire(timeout=0)
-            logging.info(f"Lanzando {name}")
+            logging.info(f"Launched {name}")
 
             def _run():
                 try:
                     subprocess.run(cfg["cmd"])
                 finally:
                     lock.release()
-                    logging.info(f"{name} finalizó")
+                    logging.info(f"{name} finished")
 
             threading.Thread(target=_run, daemon=True).start()
             return
@@ -38,10 +38,10 @@ def launch_script(name, cfg):
         except Timeout:
             continue
 
-    logging.warning(f"{name}: ya hay una ejecución en curso, no se lanza")
+    logging.warning(f"{name}: Execution is already in progress, it is not launched")
 
 def run_etl():
-    logging.info("Iniciando ETL diario")
+    logging.info("*** ETL Init ***")
 
     for name, cfg in SCRIPTS.items():
         launch_script(name, cfg)
